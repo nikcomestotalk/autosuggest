@@ -1,3 +1,6 @@
+***CURRENTLY IN DEVELOP MODE***
+
+
 # autosuggest
 Application which auto suggest/ auto correct when user types 
 
