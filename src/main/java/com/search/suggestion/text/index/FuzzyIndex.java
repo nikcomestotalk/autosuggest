@@ -1,7 +1,8 @@
 package com.search.suggestion.text.index;
 
 import com.search.suggestion.data.ScoredObject;
-import com.search.suggestion.data.SuggestRecord;
+import com.search.suggestion.data.SearchPayload;
+import com.search.suggestion.data.SuggestPayload;
 import com.search.suggestion.text.match.Automaton;
 
 import java.util.Set;
@@ -25,5 +26,5 @@ public interface FuzzyIndex<V> extends Index<V>
      * @throws NullPointerException if {@code matcher} is null;
      */
     Set<ScoredObject<V>> getAny(Automaton matcher);
-    Set<ScoredObject<V>> getAny(Automaton matcher, SuggestRecord json);
+    Set<ScoredObject<V>> getAny(Automaton matcher, SearchPayload json);
 }

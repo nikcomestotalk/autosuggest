@@ -3,7 +3,7 @@ package com.search.suggestion.data;
 import java.io.Serializable;
 import java.util.*;
 
-public class SuggestRecord implements Indexable,Serializable
+public class SuggestPayload implements Indexable,Serializable
 {
     private String search;
     private int count=1;
@@ -22,9 +22,13 @@ public class SuggestRecord implements Indexable,Serializable
 		this.filter = filter;
 	}
 
-	private String realSearch;
+	private String realText;
 
-    public SuggestRecord(String search, Map<String, Integer> filter)
+	public SuggestPayload()
+	{
+
+	}
+    public SuggestPayload(String search, Map<String, Integer> filter)
     {
         this.search = search;
         this.filter = filter;
@@ -32,9 +36,10 @@ public class SuggestRecord implements Indexable,Serializable
         this.setCount("1");
     }
    
-    public void copy(SuggestRecord sr) {
+    public void copy(SuggestPayload sr) {
 		search =sr.getSearch();
 		filter = sr.getFilter();
+		realText = sr.getRealText();
 	}
 
     private Boolean isNonZero(int i) {
@@ -86,12 +91,15 @@ public class SuggestRecord implements Indexable,Serializable
 		this.recency = recency;
 	}
 
-	public String getRealSearch() {
-		return realSearch;
+	public String getRealText() {
+    	if(realText == null) {
+    		return "";
+		}
+		return realText;
 	}
 
-	public void setRealSearch(String realSearch) {
-		this.realSearch = realSearch;
+	public void setRealText(String realText) {
+		this.realText = realText;
 	}
 
 	public int getRecords() {
@@ -102,7 +110,7 @@ public class SuggestRecord implements Indexable,Serializable
 		this.records = records;
 	}
     public String toString() {
-    	return "search"+ getSearch()+"realSearch"+ getRealSearch();
+    	return "search"+ getSearch()+"realText"+ getRealText();
     }
     public Boolean ignoreFilter(String filter)
     {

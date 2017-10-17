@@ -1,7 +1,8 @@
 package com.search.suggestion.adaptor;
 
 import com.search.suggestion.data.ScoredObject;
-import com.search.suggestion.data.SuggestRecord;
+import com.search.suggestion.data.SearchPayload;
+import com.search.suggestion.data.SuggestPayload;
 
 import java.util.Collection;
 
@@ -17,7 +18,7 @@ public interface IndexAdapter<T>
      * Returns a {@link Collection} of all values associated with a token.
      */
     Collection<ScoredObject<T>> get(String token);
-    Collection<ScoredObject<T>> get(String token,SuggestRecord json);
+    Collection<ScoredObject<T>> get(String token,SearchPayload json);
 
     /**
      * Associates a single value with a token.

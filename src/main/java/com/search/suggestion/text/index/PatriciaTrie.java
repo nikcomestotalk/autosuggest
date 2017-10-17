@@ -2,7 +2,8 @@ package com.search.suggestion.text.index;
 
 import com.search.suggestion.common.Strings;
 import com.search.suggestion.data.ScoredObject;
-import com.search.suggestion.data.SuggestRecord;
+import com.search.suggestion.data.SearchPayload;
+import com.search.suggestion.data.SuggestPayload;
 import com.search.suggestion.text.match.Automaton;
 import com.search.suggestion.text.match.EqualityAutomaton;
 import com.search.suggestion.text.util.ArraySet;
@@ -61,7 +62,7 @@ public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,S
         return result;
     }
     @Override
-    public Set<ScoredObject<V>> getAny(Automaton matcher, SuggestRecord json)
+    public Set<ScoredObject<V>> getAny(Automaton matcher, SearchPayload json)
     {
     	checkPointer(matcher != null);
         Set<ScoredObject<V>> result = new HashSet<>();
@@ -182,7 +183,7 @@ public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,S
         return Collections.emptyList();
     }
     @SuppressWarnings("checkstyle:parameterassignment")
-    private Collection<FuzzyMatch> findAll(Node node, Automaton matcher, String word,SuggestRecord json)
+    private Collection<FuzzyMatch> findAll(Node node, Automaton matcher, String word,SearchPayload json)
     {
         assert node != null;
         assert matcher != null;
@@ -381,7 +382,7 @@ public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,S
         }
         return result;
     }
-    private Set<ScoredObject<V>> values(Node node, Automaton matcher,SuggestRecord sp)
+    private Set<ScoredObject<V>> values(Node node, Automaton matcher,SearchPayload sp)
     {
         assert node != null;
         assert matcher != null;
@@ -389,7 +390,7 @@ public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,S
         Map<String, Integer> filterMap = sp.getFilter();
         for (V value : node.values())
         {
-        	SuggestRecord sr = (SuggestRecord)value;
+        	SuggestPayload sr = (SuggestPayload)value;
             Map<String, Integer> searchFilterMap = sr.getFilter();
             Boolean filterPresent = false;
             Boolean allFilterPassed = true;
@@ -425,7 +426,7 @@ public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,S
         }
         for (Entry<String, Node> entry : node.childEntries())
         {
-            result.addAll(values(entry.getValue(), matcher.step(entry.getKey())));
+            result.addAll(values(entry.getValue(), matcher.step(entry.getKey()), sp));
         }
         return result;
     }
@@ -439,11 +440,11 @@ public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,S
         boolean addAllValues(Collection<V> values)
         {
             assert values != null;
-            SuggestRecord realSr = null;
+            SuggestPayload realSr = null;
             int donotadd = 0;
             try {
 	            for(V rv : values) {
-	            	realSr = (SuggestRecord)rv;
+	            	realSr = (SuggestPayload)rv;
 	            }
 	            if (this.values == null)
 	            {
@@ -451,7 +452,7 @@ public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,S
 	            }
 	            else {
 	            	for(V sr : this.values) {
-	            		SuggestRecord srv = (SuggestRecord)sr;
+	            		SuggestPayload srv = (SuggestPayload)sr;
 	            		//System.out.println("First one "+srv.getSearch()+" count is "+srv.getCount());
 	            		if(recordAlreadyPresent(srv,realSr)) {
 	            			srv.setCount(srv.getCount()+realSr.getCount());
@@ -474,25 +475,8 @@ public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,S
             else
             	return false;
         }
-        boolean recordAlreadyPresent(SuggestRecord first, SuggestRecord second) {
-        	/*if(first.getSearch().equals(second.getSearch())) {
-        		if(first.getCity() == second.getCity()) {
-        			if(first.getRegion() == second.getRegion()) {
-        				if(first.getCategoryl1() == second.getCategoryl1()) {
-        					if(first.getCategoryl2() == second.getCategoryl2()) {
-            					if(first.getUser() == second.getUser()) {
-            						return true;
-            					}
-        						
-        					}
-        				}
-        			}
-        		}
-        	}*/
-        	if(first.getFilter().equals(second.getFilter())) {
-        	    return true;
-            }
-        	return false;
+        boolean recordAlreadyPresent(SuggestPayload first, SuggestPayload second) {
+            return first.getSearch().equals(second.getSearch()) && first.getFilter().equals(second.getFilter());
         }
         Node bisect(String key, int pivot)
         {

@@ -4,7 +4,8 @@ import com.search.suggestion.adaptor.IndexAdapter;
 import com.search.suggestion.common.Aggregator;
 import com.search.suggestion.data.Indexable;
 import com.search.suggestion.data.ScoredObject;
-import com.search.suggestion.data.SuggestRecord;
+import com.search.suggestion.data.SearchPayload;
+import com.search.suggestion.data.SuggestPayload;
 import com.search.suggestion.text.analyze.Analyzer;
 import com.search.suggestion.text.index.Index;
 
@@ -181,7 +182,7 @@ public final class SearchEngine<T extends Indexable> implements Serializable
         }
         return result;
     }
-    public TreeMap <Double,List<SuggestRecord>> search(SuggestRecord sr, boolean val)
+    public TreeMap <Double,List<SuggestPayload>> search(SearchPayload sr, boolean val)
     {
         checkPointer(sr != null);
         String query = sr.getSearch();
@@ -218,10 +219,10 @@ public final class SearchEngine<T extends Indexable> implements Serializable
      * Returns a {@link List} of all elements that match a query, sorted
      * according to the default comparators.
      */
-    public List<T> search(SuggestRecord sr)
+    public List<T> search(SearchPayload searchPayload)
     {
-        checkPointer(sr != null);
-        String query = sr.getSearch();
+        checkPointer(searchPayload != null);
+        String query = searchPayload.getSearch();
         System.out.println(query);
         //JSONObject jsons = new JSONObject("{'q':'city','user':'5234'}");
         checkPointer(query != null);
@@ -232,7 +233,7 @@ public final class SearchEngine<T extends Indexable> implements Serializable
             Iterator<String> tokens = analyzer.apply(query).iterator();
             if (tokens.hasNext())
             {
-                aggregator.addAll(index.get(tokens.next(),sr));
+                aggregator.addAll(index.get(tokens.next(),searchPayload));
                 //aggregator.addAll(index.get(tokens.next()));
             }
             while (tokens.hasNext())
@@ -241,10 +242,10 @@ public final class SearchEngine<T extends Indexable> implements Serializable
                 {
                     break;
                 }
-                aggregator.retainAll(index.get(tokens.next(),sr));
+                aggregator.retainAll(index.get(tokens.next(),searchPayload));
                 //aggregator.retainAll(index.get(tokens.next()));
             }
-            return aggregator.values(sr);
+            return aggregator.values(searchPayload);
         }
         finally
         {
@@ -318,7 +319,7 @@ public final class SearchEngine<T extends Indexable> implements Serializable
                     return result;
                 }
                 @Override
-                public Collection<ScoredObject<T>> get(String token, SuggestRecord json)
+                public Collection<ScoredObject<T>> get(String token, SearchPayload json)
                 {
                     List<ScoredObject<T>> result = new LinkedList<>();
                     for (T element : index.getAll(token))

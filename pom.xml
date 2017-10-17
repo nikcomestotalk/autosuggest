@@ -9,6 +9,7 @@
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+           <exec.mainClass>com.search.suggestion.TextSuggestor</exec.mainClass>
     </properties>
     <build>
         <plugins>
@@ -17,7 +18,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.5.0</version>
                 <configuration>
-                    <mainClass>TextSuggestor</mainClass>
+                    <mainClass>com.search.suggestion.TextSuggestor</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -75,6 +76,17 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.net.httpserver</groupId>
+            <artifactId>http</artifactId>
+            <version>20070405</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

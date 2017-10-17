@@ -1,0 +1,8 @@
+"query": "ephone",
+> "filter": {
+> },
+> "bucket": {
+> "user":11
+> },
+> "limit":10
+> }

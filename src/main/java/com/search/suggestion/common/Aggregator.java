@@ -1,7 +1,8 @@
 package com.search.suggestion.common;
 
 import com.search.suggestion.data.ScoredObject;
-import com.search.suggestion.data.SuggestRecord;
+import com.search.suggestion.data.SearchPayload;
+import com.search.suggestion.data.SuggestPayload;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -11,6 +12,7 @@ import static com.search.suggestion.common.Precondition.checkPointer;
 /**
  * Aggregator to collect, merge and transform {@link ScoredObject} elements.
  */
+@SuppressWarnings("unchecked")
 public class Aggregator<T>
 {
     private final Map<T, Double> scores;
@@ -155,18 +157,19 @@ public class Aggregator<T>
     /**
      * Returns a {@link List} of all objects scored, sorted according to the default comparator.
      */
-    public TreeMap <Double,List<SuggestRecord>> values(SuggestRecord json, boolean bool)
+    public TreeMap <Double,List<SuggestPayload>> values(SearchPayload json, boolean bool)
     {
-    	int user = json.getFilter("user");
-    	//Double allowedScore = (Double) (json.getRealSearch().split(" ").length -.5);
+        String bucketKey = json.getFirstBucket();
+        int bucketValue = json.getBucket(bucketKey);
+    	//Double allowedScore = (Double) (json.getRealText().split(" ").length -.5);
     	/*String query = json.getString("q");*/
     	Double value;
-        TreeMap<Double,List<SuggestRecord>> tmap = new TreeMap(Collections.reverseOrder());
+        TreeMap<Double,List<SuggestPayload>> tmap = new TreeMap<Double,List<SuggestPayload>>(Collections.reverseOrder());
         
         for (Entry<T, Double> entry : scores.entrySet())
         {
-        	SuggestRecord oldsr = (SuggestRecord) entry.getKey();
-        	SuggestRecord sr = new SuggestRecord(oldsr.getSearch(), new HashMap<String,Integer>());
+        	SuggestPayload oldsr = (SuggestPayload) entry.getKey();
+        	SuggestPayload sr = new SuggestPayload(oldsr.getSearch(), new HashMap<String,Integer>());
         	sr.copy(oldsr);
         	
         	value = entry.getValue();
@@ -186,18 +189,19 @@ public class Aggregator<T>
     /**
      * Returns a {@link List} of all objects scored, sorted according to the default comparator.
      */
-    public List<T> values(SuggestRecord json)
+    public List<T> values(SearchPayload json)
     {
-    	int user = json.getFilter("user");
-    	//Double allowedScore = (Double) (json.getRealSearch().split(" ").length -.5);
+        String bucketKey = json.getFirstBucket();
+
+    	//Double allowedScore = (Double) (json.getRealText().split(" ").length -.5);
     	/*String query = json.getString("q");*/
     	Double value;
-        TreeMap<Double,List<SuggestRecord>> tmap = new TreeMap(Collections.reverseOrder());
+        TreeMap<Double,List<SuggestPayload>> tmap = new TreeMap<Double,List<SuggestPayload>>(Collections.reverseOrder());
         
         for (Entry<T, Double> entry : scores.entrySet())
         {
-        	SuggestRecord oldsr = (SuggestRecord) entry.getKey();
-        	SuggestRecord sr = new SuggestRecord(oldsr.getSearch(), new HashMap<>());
+        	SuggestPayload oldsr = (SuggestPayload) entry.getKey();
+        	SuggestPayload sr = new SuggestPayload(oldsr.getSearch(), new HashMap<>());
         	sr.copy(oldsr);
         	
         	value = entry.getValue();
@@ -217,26 +221,26 @@ public class Aggregator<T>
         List<T> result = new ArrayList<>();
         while(iterator.hasNext()) {
            Entry mentry = (Entry)iterator.next();
-           ArrayList <SuggestRecord> al = (ArrayList)mentry.getValue();
-           TreeMap<Integer,List<SuggestRecord>> tmapwithuser = new TreeMap(Collections.reverseOrder());
-           TreeMap<Integer,List<SuggestRecord>> tmapwithoutuser = new TreeMap(Collections.reverseOrder());
+           ArrayList <SuggestPayload> al = (ArrayList<SuggestPayload>)mentry.getValue();
+           TreeMap<Integer,List<SuggestPayload>> tMapWithBucket = new TreeMap<Integer,List<SuggestPayload>>(Collections.reverseOrder());
+           TreeMap<Integer,List<SuggestPayload>> tMapNoBucket = new TreeMap<Integer,List<SuggestPayload>>(Collections.reverseOrder());
            for(int i=0;i<al.size();i++) {
 
-        	   SuggestRecord sr = al.get(i);
-        	   if(sr.getFilter("user") != null && sr.getFilter("user") == json.getFilter("user")) {
-        		   //User bucket
-        		   UpdateMap(tmapwithuser,sr,sr.getCount());
+        	   SuggestPayload sr = al.get(i);
+        	   if(sr.getFilter(bucketKey) != null && sr.getFilter(bucketKey) == json.getBucket(bucketKey)) {
+        		   // custom bucket
+        		   UpdateMap(tMapWithBucket,sr,sr.getCount());
         	   }
         	   else {
         		   //Non user bucket
-        		   UpdateMap(tmapwithoutuser,sr,sr.getCount());
+        		   UpdateMap(tMapNoBucket,sr,sr.getCount());
         	   }
 
            }
-           //System.out.println("user wlaa "+tmapwithuser);
-           //System.out.println("Bina user wala "+tmapwithoutuser);
-           UpdateResults(result,tmapwithuser);
-           UpdateResults(result,tmapwithoutuser);
+           //System.out.println("user wlaa "+tMapWithBucket);
+           //System.out.println("Bina user wala "+tMapNoBucket);
+           UpdateResults(result,tMapWithBucket);
+           UpdateResults(result,tMapNoBucket);
            //System.out.print("key is: "+ mentry.getKey() + " & Value is: ");
           // System.out.println(mentry.getValue());
         }
@@ -251,45 +255,46 @@ public class Aggregator<T>
         }*/
         return result;
     }
-    public void UpdateResults(List<T> result,TreeMap<Integer,List<SuggestRecord>> tmap) {
+    public void UpdateResults(List<T> result,TreeMap<Integer,List<SuggestPayload>> tmap) {
     	Set set = tmap.entrySet();
         Iterator iterator = set.iterator();
         while(iterator.hasNext()) {
         	Entry mentry = (Entry)iterator.next();
-        	ArrayList <SuggestRecord> al = (ArrayList)mentry.getValue();
+        	ArrayList<SuggestPayload> al = (ArrayList<SuggestPayload>)mentry.getValue();
         	for(int i=0;i<al.size();i++) {
         		result.add((T)al.get(i));
         	}
         }
     }
-    public <T>void UpdateMap(TreeMap<T,List<SuggestRecord>> tmap, SuggestRecord sr,T key) {
+    public <T>void UpdateMap(TreeMap<T,List<SuggestPayload>> tmap, SuggestPayload sr, T key) {
     	//System.out.println("coming here for "+key);
     	if(tmap.containsKey(key)) {
-		    List<SuggestRecord> templist =  tmap.get(key);
+		    List<SuggestPayload> templist =  tmap.get(key);
 		    boolean norecord = true;
 		    T newkey = key;
 		    //System.out.println("-------- For loop started -------");
-		    //System.out.println("Searching for --->"+sr.getRealSearch());
+		    //System.out.println("Searching for --->"+sr.getRealText());
 		    for (Object srt : templist.toArray()) {
-		    	SuggestRecord srs = (SuggestRecord)srt;
+		    	SuggestPayload srs = (SuggestPayload)srt;
 		    	String name = sr.getSearch();
 		    	String name1 = srs.getSearch();
-		    	String rn = sr.getRealSearch();
-		    	String rn1 = srs.getRealSearch();
+		    	String rn = sr.getRealText();
+		    	String rn1 = srs.getRealText();
 		    	//System.out.println(rn);
 		    	//System.out.println(rn1);
 		    	
-		    	//System.out.println("start of this -->"+sr.getSearch()+" "+srs.getSearch()+" "+sr.getRealSearch()+" "+srs.getRealSearch()+" end of this");
-		    	if(sr.getSearch().equals(srs.getSearch()) || sr.getRealSearch().equals(srs.getRealSearch())) {
+		    	//System.out.println("start of this -->"+sr.getSearch()+" "+srs.getSearch()+" "+sr.getRealText()+" "+srs.getRealText()+" end of this");
+
+                if(sr.getSearch().equals(srs.getSearch()) || sr.getRealText().equals(srs.getRealText())) {
 		    		norecord = false;
-		    		//System.out.println("ONe found"+sr.getRealSearch());
+		    		//System.out.println("ONe found"+sr.getRealText());
 		    		srs.setCount(srs.getCount()+sr.getCount());
 		    		break;
 		    	}
 		    }
 		    if(norecord) {
 		    	//System.out.println(templist);
-		    	//System.out.println("not found in  list -->"+ sr.getRealSearch());
+		    	//System.out.println("not found in  list -->"+ sr.getRealText());
 	       		templist.add(sr);
 	       		tmap.remove(key);
 	       		tmap.put(key, templist);
@@ -297,7 +302,7 @@ public class Aggregator<T>
 	   }
 	   else
 	   {
-		   List<SuggestRecord> templist = new ArrayList();
+		   List<SuggestPayload> templist = new ArrayList<SuggestPayload>();
 		   templist.add(sr);
 		   tmap.put(key, templist);
 	   }
