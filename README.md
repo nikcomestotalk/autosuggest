@@ -1,8 +1,16 @@
 ***CURRENTLY IN DEVELOP MODE***
 
 
-# autosuggest
-Application which auto suggest/ auto correct when user types 
+# Smart Search Suggestor
+Let your customers engage right at the search bar by giving them more userful, user-centric searches with Smart Search 
+
+Silent features
+1. Instant search suggestions and spell check
+2. Low Latency  ~ Response within 20 ms for 1M records
+3. Order don’t matter “Iphone 6s” or “6s iphone” yield same result
+4. Unlimited Filters and Parameters support
+5. Support personalization
+
 
 Train input data 
 T1. {"text": " Iphone 5s in mumbai","parameters":{"user":45432,"category":453,"location":34,"model":1}}
