@@ -12,7 +12,6 @@ import java.io.IOException;
 
 public final class TextSuggestor
 {
-    @SuppressWarnings("checkstyle:leftcurly")
     private TextSuggestor() { }
 
     public static void main(String[] args) throws IOException {

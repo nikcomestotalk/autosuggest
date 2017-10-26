@@ -160,7 +160,7 @@ public class Aggregator<T>
     public TreeMap <Double,List<SuggestPayload>> values(SearchPayload json, boolean bool)
     {
         String bucketKey = json.getFirstBucket();
-        int bucketValue = json.getBucket(bucketKey);
+        int bucketValue = json.getBucket(bucketKey).get("value");
     	//Double allowedScore = (Double) (json.getRealText().split(" ").length -.5);
     	/*String query = json.getString("q");*/
     	Double value;
@@ -191,63 +191,161 @@ public class Aggregator<T>
      */
     public List<T> values(SearchPayload json)
     {
-        String bucketKey = json.getFirstBucket();
+        int maxBucketSize = 3;
+        ArrayList<TreeMap<Integer, List<SuggestPayload>>> bucketList = new ArrayList<TreeMap<Integer, List<SuggestPayload>>>();
 
-    	//Double allowedScore = (Double) (json.getRealText().split(" ").length -.5);
+        Map<String, Map<String, Integer>> bucket = json.getBucket();
+
+
+        int bucketSize = bucket.size();
+        String bucketName[];
+        int bucketValue[];
+        int bucketWeight[];
+        int size=1;
+        if(bucketSize == 1) {
+            size=2;
+        }
+        if(bucketSize == 2) {
+            size=4;
+        }
+        if(bucketSize == 3) {
+            size=8;
+        }
+        bucketName = new String[maxBucketSize];
+        bucketValue = new int[maxBucketSize];
+        bucketWeight = new int[maxBucketSize];
+        for(int i =0; i<maxBucketSize;i++) {
+            bucketName[i]   = "";
+            bucketValue[i]  = 0;
+            bucketWeight[i] = 0;
+        }
+        for(int i=0; i<size;i++) {
+            TreeMap<Integer, List<SuggestPayload>> tMapWithBucket = new TreeMap<Integer, List<SuggestPayload>>(Collections.reverseOrder());
+            bucketList.add(tMapWithBucket);
+        }
+        int start = 0;
+        if (bucket.size() > 0) {
+            for (Map.Entry<String, Map<String, Integer>> entry : bucket.entrySet()) {
+                bucketName[start]   = entry.getKey();
+                bucketValue[start]  = entry.getValue().get("value");
+                bucketWeight[start] = entry.getValue().get("weight");
+                start++;
+            }
+        }
+        //Double allowedScore = (Double) (json.getRealText().split(" ").length -.5);
     	/*String query = json.getString("q");*/
-    	Double value;
-        TreeMap<Double,List<SuggestPayload>> tmap = new TreeMap<Double,List<SuggestPayload>>(Collections.reverseOrder());
-        
-        for (Entry<T, Double> entry : scores.entrySet())
-        {
-        	SuggestPayload oldsr = (SuggestPayload) entry.getKey();
-        	SuggestPayload sr = new SuggestPayload(oldsr.getSearch(), new HashMap<>());
-        	sr.copy(oldsr);
-        	
-        	value = entry.getValue();
-        	value = (double)Math.round(value * 100) / 100;
-        	
-        	//System.out.println(" Before sorting for name "+sr.getSearch()+" count is "+sr.getCount()+" value is "+value);
-        	//if(value>=allowedScore){
-        		UpdateMap(tmap,sr,value);
-        	//}
-        	
-        	//System.out.println("LIST"+tmap);
-        	
+        Double value;
+        TreeMap<Double, List<SuggestPayload>> tmap = new TreeMap<Double, List<SuggestPayload>>(Collections.reverseOrder());
+
+        for (Map.Entry<T, Double> entry : scores.entrySet()) {
+            SuggestPayload oldsr = (SuggestPayload) entry.getKey();
+            SuggestPayload sr = new SuggestPayload(oldsr.getSearch(), new HashMap<>());
+            sr.copy(oldsr);
+
+            value = entry.getValue();
+            value = (double) Math.round(value * 100) / 100;
+
+            //System.out.println(" Before sorting for name "+sr.getSearch()+" count is "+sr.getCount()+" value is "+value);
+            //if(value>=allowedScore){
+            UpdateMap(tmap, sr, value);
+            //}
+
+            //System.out.println("LIST"+tmap);
+
             //list.add(new ScoredObject<>(entry.getKey(), value));
         }
         Set set = tmap.entrySet();
         Iterator iterator = set.iterator();
         List<T> result = new ArrayList<>();
-        while(iterator.hasNext()) {
-           Entry mentry = (Entry)iterator.next();
-           ArrayList <SuggestPayload> al = (ArrayList<SuggestPayload>)mentry.getValue();
-           TreeMap<Integer,List<SuggestPayload>> tMapWithBucket = new TreeMap<Integer,List<SuggestPayload>>(Collections.reverseOrder());
-           TreeMap<Integer,List<SuggestPayload>> tMapNoBucket = new TreeMap<Integer,List<SuggestPayload>>(Collections.reverseOrder());
-           for(int i=0;i<al.size();i++) {
+        while (iterator.hasNext()) {
+            Entry mentry = (Entry) iterator.next();
+            ArrayList<SuggestPayload> al = (ArrayList<SuggestPayload>) mentry.getValue();
 
-        	   SuggestPayload sr = al.get(i);
-        	   if(sr.getFilter(bucketKey) != null && sr.getFilter(bucketKey) == json.getBucket(bucketKey)) {
-        		   // custom bucket
-        		   UpdateMap(tMapWithBucket,sr,sr.getCount());
-        	   }
-        	   else {
-        		   //Non user bucket
-        		   UpdateMap(tMapNoBucket,sr,sr.getCount());
-        	   }
 
-           }
-           //System.out.println("user wlaa "+tMapWithBucket);
-           //System.out.println("Bina user wala "+tMapNoBucket);
-           UpdateResults(result,tMapWithBucket);
-           UpdateResults(result,tMapNoBucket);
-           //System.out.print("key is: "+ mentry.getKey() + " & Value is: ");
-          // System.out.println(mentry.getValue());
+            for (int i = 0; i < al.size(); i++) {
+
+                SuggestPayload sr = al.get(i);
+
+                boolean first = same(sr, json, bucketName[0]);
+                boolean second = same(sr, json, bucketName[1]);
+                boolean third = same(sr, json, bucketName[2]);
+
+                if(bucketSize == 0) {
+                    UpdateMap(bucketList.get(0), sr, sr.getCount());
+                }
+                if (bucketSize == 1) {
+                    if (first) {
+                        UpdateMap(bucketList.get(0), sr, sr.getCount());
+                    }
+                    else {
+                        UpdateMap(bucketList.get(1), sr, sr.getCount());
+                    }
+                }
+                if (bucketSize == 2) {
+                    if (first && second) {
+                        UpdateMap(bucketList.get(0), sr, sr.getCount());
+                    }
+                    else if ((first && !second) || (!first && second)) {
+                        int wgt1 = bucketWeight[0];
+                        int wgt2 = bucketWeight[1];
+                        if(wgt1 > wgt2 && first) {
+                            UpdateMap(bucketList.get(1), sr, sr.getCount());
+                        }
+                        else if(wgt2 > wgt1 && second) {
+                            UpdateMap(bucketList.get(1), sr, sr.getCount());
+                        }
+                        else {
+                            UpdateMap(bucketList.get(2), sr, sr.getCount());
+                        }
+                    }
+                    else {
+                        UpdateMap(bucketList.get(3), sr, sr.getCount());
+                    }
+                }
+                if (bucketSize == 3) {
+                    List<Integer> weights = new ArrayList<Integer>();
+
+                    weights.add(0);
+                    weights.add(bucketWeight[2]);
+                    weights.add(bucketWeight[1]);
+                    weights.add(bucketWeight[2]+bucketWeight[1]);
+                    weights.add(bucketWeight[0]);
+                    weights.add(bucketWeight[0]+bucketWeight[2]);
+                    weights.add(bucketWeight[0]+bucketWeight[1]);
+                    weights.add(bucketWeight[0]+bucketWeight[1] + bucketWeight[2]);
+                    Collections.reverse(weights);
+
+                    int totalWeight = 0;
+                    if(first)
+                        totalWeight+=bucketWeight[0];
+                    if(second)
+                        totalWeight+=bucketWeight[1];
+                    if(third)
+                        totalWeight+=bucketWeight[2];
+
+                    int find = 0;
+                    for(int weight : weights) {
+                        if(weight == totalWeight)
+                            break;
+                        find++;
+                    }
+                    UpdateMap(bucketList.get(find), sr, sr.getCount());
+                }
+            }
+
         }
-        //System.out.println(result);
-        //System.out.println(tmap);
-        //System.out.println(list);
-       // Collections.sort(list, comparator);
+        //System.out.println("user wlaa "+tMapWithBucket);
+        //System.out.println("Bina user wala "+tMapNoBucket);
+        for (int i = 0; i < bucketList.size(); i++) {
+            UpdateResults(result, bucketList.get(i));
+        }
+        //System.out.print("key is: "+ mentry.getKey() + " & Value is: ");
+        // System.out.println(mentry.getValue());
+
+    //System.out.println(result);
+    //System.out.println(tmap);
+    //System.out.println(list);
+    // Collections.sort(list, comparator);
 
        /* for (ScoredObject<T> element : list)
         {
@@ -255,6 +353,17 @@ public class Aggregator<T>
         }*/
         return result;
     }
+
+    private boolean same(SuggestPayload sr, SearchPayload json, String key) {
+
+        if (!key.equals("") && sr.getFilter(key) != null && json.getBucket(key) !=null) {
+            if(Integer.parseInt(sr.getFilter(key).toString()) == Integer.parseInt(json.getBucket(key).get("value").toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void UpdateResults(List<T> result,TreeMap<Integer,List<SuggestPayload>> tmap) {
     	Set set = tmap.entrySet();
         Iterator iterator = set.iterator();

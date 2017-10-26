@@ -6,7 +6,7 @@ import java.util.Map;
 public class RawResponse {
     private String matched;
     private Map<String,Integer> parameters = new HashMap<String,Integer>();
-
+    private String error = "";
     public String getMatched() {
         return matched;
     }
@@ -21,5 +21,10 @@ public class RawResponse {
 
     public void setParameters(Map<String, Integer> parameters) {
         this.parameters = parameters;
+    }
+
+    public void setError(String error) {
+        if(error != null)
+            this.error = error;
     }
 }

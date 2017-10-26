@@ -31,10 +31,11 @@ public class SuggestAdapter implements IndexAdapter<SuggestPayload>, Serializabl
     {
     	//System.out.println("HI");
     	double threshold = Math.log(token.length());
-    	if(thresholdCheckNotRequired == true ) {
+
+    	if ( thresholdCheckNotRequired == true ) {
     		threshold = 0;
     	}
-    	threshold = Math.ceil(threshold);
+    	threshold = Math.round(threshold);
     	//System.out.println("New Threshold value is "+ threshold);
     	EditDistanceAutomaton eda = new EditDistanceAutomaton(token, threshold);
         return index.getAny(eda,json);

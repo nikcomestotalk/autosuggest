@@ -158,6 +158,7 @@ public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,S
         assert node != null;
         assert matcher != null;
         assert word != null;
+
         if (matcher.isWordAccepted())
         {
             // Resume partial match
@@ -188,6 +189,8 @@ public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,S
         assert node != null;
         assert matcher != null;
         assert word != null;
+        //System.out.println(matcher);
+        //System.out.println(word);
         if (matcher.isWordAccepted())
         {
             // Resume partial match
@@ -411,17 +414,7 @@ public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,S
             if(filterPresent && allFilterPassed) {
                 result.add(new ScoredObject<>(value, matcher.getScore()));
             }
-        	/*if(sp.getCategoryl1()== 0 || sp.getCategoryl1() == sr.getCategoryl1()) {
-        		if(sp.getCategoryl1()!=0 || sp.getCategoryl2()== 0 || sp.getCategoryl2() == sr.getCategoryl2()) {
-        			if(sp.getRegion()== 0 || sp.getRegion() == sr.getRegion()) {
-        				if(sp.getRegion()!=0 || sp.getCity()== 0 || sp.getCity() == sr.getCity()) {
-        					result.add(new ScoredObject<>(value, matcher.getScore()));
-        				}
-        			}
-        		}
-        	}*/
 
-            //result.add(new ScoredObject<>(value, matcher.getScore()));
             
         }
         for (Entry<String, Node> entry : node.childEntries())

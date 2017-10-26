@@ -34,7 +34,7 @@ public final class EditDistanceAutomaton extends AbstractAutomaton
 
     private int getDistance()
     {
-    	
+
         return vector[size - 1];
     }
 
@@ -59,6 +59,9 @@ public final class EditDistanceAutomaton extends AbstractAutomaton
     @Override
     public boolean isWordAccepted()
     {
+        //System.out.println(pattern);
+       // System.out.println(word);
+        //System.out.println(getDistance()+" threshold is "+threshold);
         return getDistance() <= threshold;
     }
 

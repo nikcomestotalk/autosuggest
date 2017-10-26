@@ -8,14 +8,14 @@ import java.util.Map;
 public class RawSeachRequest implements RawRequestInterface{
     private String query;
     private Map<String,Integer> filter = new HashMap<String,Integer>();
-    private Map<String,Integer> bucket = new HashMap<String,Integer>();
+    private Map<String,Map<String,Integer>> bucket = new HashMap<String,Map<String,Integer>>();
     private int limit = 0;
 
-    public Map<String, Integer> getBucket() {
+    public Map<String, Map<String,Integer>> getBucket() {
         return bucket;
     }
 
-    public void setBucket(Map<String, Integer> bucket) {
+    public void setBucket(Map<String, Map<String,Integer>> bucket) {
         this.bucket = bucket;
     }
 

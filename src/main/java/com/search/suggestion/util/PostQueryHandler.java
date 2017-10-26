@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +57,14 @@ public class PostQueryHandler implements HttpHandler {
         RawSeachRequest rawRequest = objectMapper.readValue(query, RawSeachRequest.class);
         rawRequest.setQuery(stopWords.removeStopWords(rawRequest.getQuery()));
         // send response
-        List<RawResponse> list = server.getResponse(rawRequest);
+        List<RawResponse> list = new ArrayList<RawResponse>();
+        if(rawRequest.getBucket().size()>3) {
+            RawResponse rawResponse = new RawResponse();
+            rawResponse.setError("Max Bucket size is 3");
+            list.add(rawResponse);
+        }
+        else
+            list = server.getResponse(rawRequest);
 
         String response = new Gson().toJson(list);
         httpExchange.getResponseHeaders().add("Content-Type", "application/json; charset=UTF-8");

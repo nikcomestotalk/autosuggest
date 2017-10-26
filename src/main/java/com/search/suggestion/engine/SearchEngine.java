@@ -247,6 +247,9 @@ public final class SearchEngine<T extends Indexable> implements Serializable
             }
             return aggregator.values(searchPayload);
         }
+        catch(Exception ex) {
+            return null;
+        }
         finally
         {
             read.unlock();
