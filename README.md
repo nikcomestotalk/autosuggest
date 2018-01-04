@@ -1,5 +1,3 @@
-***CURRENTLY IN DEVELOP MODE***
-
 
 ## Smart Search Suggestor
 Let your customers engage right at the search bar by giving them more userful, user-centric searches with Smart Search 
