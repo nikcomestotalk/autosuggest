@@ -9,6 +9,7 @@
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+        <addClasspath>true</addClasspath>
            <exec.mainClass>com.search.suggestion.TextSuggestor</exec.mainClass>
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
@@ -19,6 +20,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.5.0</version>
                 <configuration>
+
                     <mainClass>com.search.suggestion.TextSuggestor</mainClass>
                 </configuration>
             </plugin>
@@ -34,6 +36,25 @@
                         <arg>-Xlint</arg>
                     </compilerArgs>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -28,7 +28,7 @@ public class BackupTree implements Runnable {
 	    	 FileOutputStream fos = null;
 	         ObjectOutputStream out = null;
 	         try {
-				String contentPath = System.getProperties().get("user.dir") + "/suggest/content/search.bin";
+				String contentPath = System.getProperties().get("user.dir") + "/content/search.bin";
 				 Output output = new Output(new FileOutputStream(contentPath));
 				 kryo.writeObject(output, indexdata);
 				 output.close();

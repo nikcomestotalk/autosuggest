@@ -11,9 +11,11 @@ import java.util.Set;
 public class StopWords {
     Set<String> stopWordsSet = new HashSet<String>();
     public StopWords() throws IOException {
-        InputStream inputStream = ClassLoader.getSystemResourceAsStream("content/stopwords.txt");
+        //InputStream inputStream = ClassLoader.getSystemResourceAsStream(System.getProperties().get("user.dir")+"/content/stopwords.txt");
+        File file = new File(System.getProperties().get("user.dir")+"/content/stopwords.txt");
+
         BufferedReader br = new BufferedReader(
-                new InputStreamReader(inputStream, "UTF-8"));
+                new FileReader(file));
         String line = "";
         while ((line = br.readLine()) != null) {
             stopWordsSet.add(line.toUpperCase());
