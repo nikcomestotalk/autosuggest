@@ -7,8 +7,11 @@ import com.search.suggestion.listener.SearchListener;
 import com.search.suggestion.socket.ServerHandler;
 import com.search.suggestion.text.analyze.SuggestAnalyzer;
 import com.search.suggestion.updater.SearchUpdater;
+import com.search.suggestion.util.BackupTree;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class TextSuggestor
 {
@@ -16,15 +19,25 @@ public final class TextSuggestor
 
     public static void main(String[] args) throws IOException {
 
+       /* List<String> a = new ArrayList<String>();
+        a.add("HI");
+        a.add("HasdfaI");
+        a.add("asdfa");
+        String b = String.join("<",a);
+        a.clear();*/
         SearchEngine<SuggestPayload> suggest = new SearchEngine.Builder<SuggestPayload>()
                 .setIndex(new SuggestAdapter())
                 .setAnalyzer(new SuggestAnalyzer())
                 .build();
 
+        BackupTree backupTree = new BackupTree(suggest);
+        backupTree.updateIndexer();
         ServerHandler serverHandler = new ServerHandler();
         (new SearchUpdater(suggest)).startService(serverHandler);
 
         (new SearchListener(suggest)).startService(serverHandler);
+
+        (new Thread(backupTree)).start();
     }
 }
 /* Map<String, Integer> m = new HashMap<String,Integer>();

@@ -145,7 +145,7 @@ public final class SearchEngine<T extends Indexable> implements Serializable
         
         try
         {
-            Aggregator<T> aggregator = new Aggregator<>(comparator);
+            Aggregator<T> aggregator = new Aggregator<T>(comparator);
             Iterator<String> tokens = analyzer.apply(query).iterator();
             if (tokens.hasNext())
             {

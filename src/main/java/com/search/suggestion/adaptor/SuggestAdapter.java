@@ -14,7 +14,7 @@ import java.util.Collection;
 public class SuggestAdapter implements IndexAdapter<SuggestPayload>, Serializable
 {
     private FuzzyIndex<SuggestPayload> index = new PatriciaTrie<>();
-    private Boolean thresholdCheckNotRequired = false; 
+    private Boolean thresholdCheckNotRequired = false;
     @Override
     public Collection<ScoredObject<SuggestPayload>> get(String token)
     {

@@ -192,7 +192,7 @@ public class Aggregator<T>
     public List<T> values(SearchPayload json)
     {
         int maxBucketSize = 3;
-        ArrayList<TreeMap<Integer, List<SuggestPayload>>> bucketList = new ArrayList<TreeMap<Integer, List<SuggestPayload>>>();
+        ArrayList<ArrayList<T>> bucketList = new ArrayList<>();
 
         Map<String, Map<String, Integer>> bucket = json.getBucket();
 
@@ -220,12 +220,13 @@ public class Aggregator<T>
             bucketWeight[i] = 0;
         }
         for(int i=0; i<size;i++) {
-            TreeMap<Integer, List<SuggestPayload>> tMapWithBucket = new TreeMap<Integer, List<SuggestPayload>>(Collections.reverseOrder());
-            bucketList.add(tMapWithBucket);
+            //Map<Integer, List<SuggestPayload>> tMapWithBucket = new HashMap<>();
+            ArrayList<T> arrayListWithBucket = new ArrayList<>();
+            bucketList.add(arrayListWithBucket);
         }
         int start = 0;
         if (bucket.size() > 0) {
-            for (Map.Entry<String, Map<String, Integer>> entry : bucket.entrySet()) {
+            for (Entry<String, Map<String, Integer>> entry : bucket.entrySet()) {
                 bucketName[start]   = entry.getKey();
                 bucketValue[start]  = entry.getValue().get("value");
                 bucketWeight[start] = entry.getValue().get("weight");
@@ -237,7 +238,7 @@ public class Aggregator<T>
         Double value;
         TreeMap<Double, List<SuggestPayload>> tmap = new TreeMap<Double, List<SuggestPayload>>(Collections.reverseOrder());
 
-        for (Map.Entry<T, Double> entry : scores.entrySet()) {
+        for (Entry<T, Double> entry : scores.entrySet()) {
             SuggestPayload oldsr = (SuggestPayload) entry.getKey();
             SuggestPayload sr = new SuggestPayload(oldsr.getSearch(), new HashMap<>());
             sr.copy(oldsr);
@@ -261,7 +262,15 @@ public class Aggregator<T>
             Entry mentry = (Entry) iterator.next();
             ArrayList<SuggestPayload> al = (ArrayList<SuggestPayload>) mentry.getValue();
 
-
+            Map<Integer,TreeMap<Integer, List<SuggestPayload>>> tempBucket = new HashMap<>();
+            for(int i=0; i<size;i++) {
+                TreeMap<Integer, List<SuggestPayload>> bucketZero = new TreeMap<Integer, List<SuggestPayload>>(Collections.reverseOrder());
+                tempBucket.put(i, bucketZero);
+            }
+            /*TreeMap<Integer, List<SuggestPayload>> bucketZero = new TreeMap<Integer, List<SuggestPayload>>(Collections.reverseOrder());
+            TreeMap<Integer, List<SuggestPayload>> bucketOne = new TreeMap<Integer, List<SuggestPayload>>(Collections.reverseOrder());
+            TreeMap<Integer, List<SuggestPayload>> bucketTwo = new TreeMap<Integer, List<SuggestPayload>>(Collections.reverseOrder());
+            TreeMap<Integer, List<SuggestPayload>> bucketThree = new TreeMap<Integer, List<SuggestPayload>>(Collections.reverseOrder());*/
             for (int i = 0; i < al.size(); i++) {
 
                 SuggestPayload sr = al.get(i);
@@ -271,35 +280,35 @@ public class Aggregator<T>
                 boolean third = same(sr, json, bucketName[2]);
 
                 if(bucketSize == 0) {
-                    UpdateMap(bucketList.get(0), sr, sr.getCount());
+                    UpdateMap(tempBucket.get(0), sr, sr.getCount());
                 }
                 if (bucketSize == 1) {
                     if (first) {
-                        UpdateMap(bucketList.get(0), sr, sr.getCount());
+                        UpdateMap(tempBucket.get(0), sr, sr.getCount());
                     }
                     else {
-                        UpdateMap(bucketList.get(1), sr, sr.getCount());
+                        UpdateMap(tempBucket.get(1), sr, sr.getCount());
                     }
                 }
                 if (bucketSize == 2) {
                     if (first && second) {
-                        UpdateMap(bucketList.get(0), sr, sr.getCount());
+                        UpdateMap(tempBucket.get(0), sr, sr.getCount());
                     }
                     else if ((first && !second) || (!first && second)) {
                         int wgt1 = bucketWeight[0];
                         int wgt2 = bucketWeight[1];
                         if(wgt1 > wgt2 && first) {
-                            UpdateMap(bucketList.get(1), sr, sr.getCount());
+                            UpdateMap(tempBucket.get(1), sr, sr.getCount());
                         }
                         else if(wgt2 > wgt1 && second) {
-                            UpdateMap(bucketList.get(1), sr, sr.getCount());
+                            UpdateMap(tempBucket.get(1), sr, sr.getCount());
                         }
                         else {
-                            UpdateMap(bucketList.get(2), sr, sr.getCount());
+                            UpdateMap(tempBucket.get(2), sr, sr.getCount());
                         }
                     }
                     else {
-                        UpdateMap(bucketList.get(3), sr, sr.getCount());
+                        UpdateMap(tempBucket.get(3), sr, sr.getCount());
                     }
                 }
                 if (bucketSize == 3) {
@@ -329,15 +338,36 @@ public class Aggregator<T>
                             break;
                         find++;
                     }
-                    UpdateMap(bucketList.get(find), sr, sr.getCount());
+
+                        UpdateMap(tempBucket.get(find), sr, sr.getCount());
                 }
             }
+            for(int i = 0; i < size; i++) {
+                if(tempBucket.get(i).size()>0)
+                    UpdateResults(bucketList.get(i), tempBucket.get(i));
+            }
+            /*if(bucketZero.size()>=1)
+                bucketList.get(0).putAll(bucketZero);
+            if(bucketOne.size()>=1)
+                bucketList.get(1).putAll(bucketOne);
+            if(bucketTwo.size()>=1)
+                bucketList.get(2).putAll(bucketTwo);
+            if(bucketThree.size()>=1)
+                bucketList.get(3).putAll(bucketThree);*/
+           /* if(tempBucket.get(0).size()>=1)
+                UpdateResults((List<T>) bucketList.get(0),tempBucket.get(0));
+            if(tempBucket.get(1).size()>=1)
+                UpdateResults((List<T>) bucketList.get(1),tempBucket.get(1));
+            if(tempBucket.get(2).size()>=1)
+                UpdateResults((List<T>) bucketList.get(2),tempBucket.get(2));
+            if(tempBucket.get(3).size()>=1)
+                UpdateResults((List<T>) bucketList.get(3),tempBucket.get(3));*/
 
         }
         //System.out.println("user wlaa "+tMapWithBucket);
         //System.out.println("Bina user wala "+tMapNoBucket);
         for (int i = 0; i < bucketList.size(); i++) {
-            UpdateResults(result, bucketList.get(i));
+            UpdateResultsList(result, bucketList.get(i));
         }
         //System.out.print("key is: "+ mentry.getKey() + " & Value is: ");
         // System.out.println(mentry.getValue());
@@ -354,6 +384,12 @@ public class Aggregator<T>
         return result;
     }
 
+    private void UpdateResultsList(List<T> result, List<T> t) {
+        for(T sp : t) {
+            result.add(sp);
+        }
+    }
+
     private boolean same(SuggestPayload sr, SearchPayload json, String key) {
 
         if (!key.equals("") && sr.getFilter(key) != null && json.getBucket(key) !=null) {
@@ -364,7 +400,7 @@ public class Aggregator<T>
         return false;
     }
 
-    public void UpdateResults(List<T> result,TreeMap<Integer,List<SuggestPayload>> tmap) {
+    public void UpdateResults(List<T> result,Map<Integer,List<SuggestPayload>> tmap) {
     	Set set = tmap.entrySet();
         Iterator iterator = set.iterator();
         while(iterator.hasNext()) {
@@ -375,6 +411,7 @@ public class Aggregator<T>
         	}
         }
     }
+
     public <T>void UpdateMap(TreeMap<T,List<SuggestPayload>> tmap, SuggestPayload sr, T key) {
     	//System.out.println("coming here for "+key);
     	if(tmap.containsKey(key)) {

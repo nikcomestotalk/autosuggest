@@ -10,6 +10,7 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
            <exec.mainClass>com.search.suggestion.TextSuggestor</exec.mainClass>
+        <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
     <build>
         <plugins>
@@ -87,6 +88,11 @@
             <artifactId>http</artifactId>
             <version>20070405</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>4.0.1</version>
         </dependency>
     </dependencies>
 </project>
