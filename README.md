@@ -1,43 +1,55 @@
 ***CURRENTLY IN DEVELOP MODE***
 
 
-# Smart Search Suggestor
+## Smart Search Suggestor
 Let your customers engage right at the search bar by giving them more userful, user-centric searches with Smart Search 
 
-Silent features
+## Silent features
 1. Instant search suggestions and spell check
 2. Low Latency  ~ Response within 20 ms for 1M records
 3. Order don’t matter “Iphone 6s” or “6s iphone” yield same result
 4. Unlimited Filters and Parameters support
 5. Support personalization
 
+## Dependancies
+1. Apache Maven >= 3.3.9
+2. Java ~ 1.8
 
-Train input data 
-T1. {"text": " Iphone 5s in mumbai","parameters":{"user":45432,"category":453,"location":34,"model":1}}
-T2. {"text": "Samsung 10L automatic washing machine","parameters":{"category":321,"location":34,"model":14}}
-T3. {"text": " Iphone 6s in good condition","parameters":{"user":342,"category":453,"location":12,"model":2}}
+## Installation
+1. Git clone https://github.com/nikcomestotalk/autosuggest.git
+2. cd autosuggest
+3. mvn install
+4. mvn exec:java
 
-<b>Text</b> tag Basically used to create tree and <b>parameters</b> tag is to parameters matched when searching.
-1. Search Query with no user tag.
+### Contributing
 
-{"matched":"Iphone","parameters":{"location": 34 }}
+1. Fork this repo and clone your fork.
+2. Make your desired changes
+3. Add tests for your new feature and ensure all tests are passing
+4. Commit and push
+5. Submit a Pull Request through Github's interface and I'll review your changes to see if they make it to the next release.
 
-Return  T1 only
 
-2. Search Query with no location, no user
+### Issues
 
-{"matched":"Iphone","parameters":{}}
+Use this repo's github issues.
 
-Return T1 and T3
-
-3. Search Query with user tag.
-
-{"matched":"Iphone","parameters":{"user":45432}} [Here user tag is used to prioritize search done by user[45432] first and rest later.
-
-Returns in with T1 coming first and T2 next.
-
-3. Auto Correct text feature is also available
-
-{"matched":"Ephone","parameters":{}}
-
-Returns T1 and T2
+## Request Template
+URL: 127.0.0.1:1081/query
+METHOD: POST
+POST PARAMS: ``{
+"query": "bullet",
+"filter": {
+},
+"bucket": {
+	"user": {
+		"value" : 7007,
+		"weight": 90
+	},
+	"location": {
+		"value":57,
+		"weight":80
+	}
+},
+"limit":10
+}``
