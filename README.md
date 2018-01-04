@@ -34,22 +34,38 @@ Let your customers engage right at the search bar by giving them more userful, u
 
 Use this repo's github issues.
 
-## Request Template
-URL: 127.0.0.1:1081/query
-METHOD: POST
-POST PARAMS: ``{
-"query": "bullet",
-"filter": {
-},
-"bucket": {
-	"user": {
-		"value" : 7007,
-		"weight": 90
-	},
-	"location": {
-		"value":57,
-		"weight":80
-	}
-},
-"limit":10
-}``
+## Request Template ##
+URL: *127.0.0.1:1081/query*
+
+METHOD: *POST*
+
+POST PARAMS: 
+```json
+		{
+			"query": "iphone red",
+			"filter": {		
+				"location":24,
+				"param1":12
+			},
+			"bucket": {		
+				"user": {	
+					"value" : 7007,
+					"weight": 90
+					},
+				"location": {
+					"value":57,
+					"weight":10
+					}
+				},
+			"limit":10
+		}
+```
+
+*Query*  : Query of which you want suggestion
+
+*Filter* : Filter out suggestions, you can set unlimited filters.
+
+*Bucket* : Order your suggestion on the basis of parameters specified within bucket key, Max 3 allowed
+
+*Limit*  :  Limit the suggestions
+
