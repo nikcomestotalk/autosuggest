@@ -1,35 +1,92 @@
-***CURRENTLY IN DEVELOP MODE***
+
+## Smart Search Suggestor
+Let your customers engage right at the search bar by giving them more userful, user-centric searches with Smart Search 
+
+## Salient features
+1. Instant search suggestions and spell check
+2. Low Latency  ~ Response within 20 ms for 1M records
+3. Order don’t matter “Iphone 6s” or “6s iphone” yield same result
+4. Unlimited Filters and Parameters support
+5. Support personalization
+
+## Dependancies
+1. Apache Maven >= 3.3.9
+2. Java ~ 1.8
+
+## Installation
+1. Git clone https://github.com/nikcomestotalk/autosuggest.git
+2. cd autosuggest
+3. mvn install
+4. mvn exec:java
+
+## Contributing
+
+1. Fork this repo and clone your fork.
+2. Make your desired changes
+3. Add tests for your new feature and ensure all tests are passing
+4. Commit and push
+5. Submit a Pull Request through Github's interface and I'll review your changes to see if they make it to the next release.
 
 
-# autosuggest
-Application which auto suggest/ auto correct when user types 
+## Issues
 
-Train input data 
-T1. {"text": " Iphone 5s in mumbai","filter":{"user":45432,"category":453,"location":34,"model":1}}
-T2. {"text": "Samsung 10L automatic washing machine","filter":{"category":321,"location":34,"model":14}}
-T3. {"text": " Iphone 6s in good condition","filter":{"user":342,"category":453,"location":12,"model":2}}
+Use this repo's github issues.
 
-<b>Text</b> tag Basically used to create tree and <b>filter</b> tag is to filter query when searching.
-1. Search Query with no user tag.
+## Request Template
+URL    : *127.0.0.1:1081/query*
 
-{"query":"Iphone","filter":{"location": 34 }}
+METHOD : *POST*
 
-Return  T1 only
+POST PARAMS: 
+```json
+		{
+			"query": "iphone red",
+			"filter": {		
+				"param1":paramVal1,
+				"param2":paramVal2
+			},
+			"bucket": {		
+				"p1": {	
+					"value" : 7007,
+					"weight": 90
+					},
+				"p2": {
+					"value":57,
+					"weight":10
+					}
+				},
+			"limit":10
+		}
+```
 
-2. Search Query with no location, no user
+*Query*  : Query of which you want suggestion
 
-{"query":"Iphone","filter":{}}
+*Filter* : Filter out suggestions, you can set unlimited filters.
 
-Return T1 and T3
+*Bucket* : Order your suggestion on the basis of parameters specified within bucket key, Max 3 allowed
 
-3. Search Query with user tag.
+*Limit*  :  Limit the suggestions
 
-{"query":"Iphone","filter":{"user":45432}} [Here user tag is used to prioritize search done by user[45432] first and rest later.
 
-Returns in with T1 coming first and T2 next.
+## Training or Populating Data in engine
+`How to put data into Suggest Engine.`
 
-3. Auto Correct text feature is also available
+URL    : *127.0.0.1:1081/update*
 
-{"query":"Ephone","filter":{}}
+METHOD : *POST*
 
-Returns T1 and T2
+POST PARAMS: 
+```json
+{
+	"query": "iphone fc",
+	"parameter": {
+		"p1": 16,
+		"p2": 12,
+		"p3": 34
+	}
+```
+
+*Query*  : Text you want to save.
+
+*parameter* : Tagging the text, which can be used for both filter and bucket parameters.
+
