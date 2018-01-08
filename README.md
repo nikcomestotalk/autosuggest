@@ -42,8 +42,8 @@ POST PARAMS:
 		{
 			"query": "iphone red",
 			"filter": {		
-				"param1":paramVal1,
-				"param2":paramVal2
+				"param1":1,
+				"param2":2
 			},
 			"bucket": {		
 				"p1": {	
