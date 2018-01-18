@@ -2,6 +2,7 @@ package com.search.suggestion.util;
 
 import com.search.suggestion.data.RawSearchUpdateRequest;
 import com.search.suggestion.interfaces.ServerInterface;
+import com.search.suggestion.text.backup.DumpData;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.codehaus.jackson.map.ObjectMapper;
