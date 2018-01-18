@@ -38,6 +38,7 @@ public class PostQueryHandler implements HttpHandler {
         System.out.println(httpExchange.getRequestMethod());
         if (httpExchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
             httpExchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+            httpExchange.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
             httpExchange.sendResponseHeaders(204, -1);
             return ;
         }

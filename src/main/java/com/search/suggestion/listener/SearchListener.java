@@ -35,7 +35,7 @@ public class SearchListener implements  ServerInterface {
 
     @Override
     public List<RawResponse> getResponse(RawRequestInterface rawRequest) {
-        System.out.println("yes i am here who else want to come");
+
         RawSeachRequest rawSeachRequest = (RawSeachRequest) rawRequest;
         SearchPayload searchPayload = new SearchPayload();
         searchPayload.setSearch(rawSeachRequest.getQuery());

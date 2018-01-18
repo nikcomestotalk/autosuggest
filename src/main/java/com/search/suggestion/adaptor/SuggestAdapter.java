@@ -20,10 +20,10 @@ public class SuggestAdapter implements IndexAdapter<SuggestPayload>, Serializabl
     {
     	//System.out.println("HI");
     	double threshold = Math.log(token.length());
-    	if(thresholdCheckNotRequired == true ) {
+    	/*if(thresholdCheckNotRequired == true ) {
     		threshold = 0;
-    	}
-    	//System.out.println("Threshold value is "+ threshold);
+    	}*/
+    	System.out.println("Threshold value is "+ threshold);
     	EditDistanceAutomaton eda = new EditDistanceAutomaton(token, threshold);
         return index.getAny(eda);
     }
@@ -31,12 +31,13 @@ public class SuggestAdapter implements IndexAdapter<SuggestPayload>, Serializabl
     {
     	//System.out.println("HI");
     	double threshold = Math.log(token.length());
+        System.out.println("Old Threshold value is "+ threshold);
 
     	if ( thresholdCheckNotRequired == true ) {
     		threshold = 0;
     	}
     	threshold = Math.round(threshold);
-    	//System.out.println("New Threshold value is "+ threshold);
+    	System.out.println("New Threshold value is "+ threshold);
     	EditDistanceAutomaton eda = new EditDistanceAutomaton(token, threshold);
         return index.getAny(eda,json);
     }

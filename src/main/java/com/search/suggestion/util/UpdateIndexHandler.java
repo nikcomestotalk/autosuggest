@@ -46,6 +46,7 @@ public class UpdateIndexHandler implements HttpHandler {
         // send response
         server.getResponse(rawRequest);
 
+        DumpData.save(query);
         String response = "Success";
         httpExchange.sendResponseHeaders(200, response.length());
         OutputStream os = httpExchange.getResponseBody();

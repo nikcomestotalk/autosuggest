@@ -68,7 +68,7 @@ public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,S
         Set<ScoredObject<V>> result = new HashSet<>();
         for (FuzzyMatch match : findAll(root, matcher, "",json))
         {
-            result.addAll(values(match.getNode(), match.getMatcher(),json));
+            result.addAll(values(match.getNode(), match.getMatcher(), json));
         }
         return result;
     }
@@ -405,13 +405,19 @@ public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,S
                     }
                 }
             }
+            /*System.out.println("---------------");
+            System.out.println(sr.getSearch());
+            System.out.println(matcher.getScore());
+            System.out.println("---------------");*/
             //When no filter is there
             if(!filterPresent) {
+                if(matcher.getScore()>.5)
                 result.add(new ScoredObject<>(value, matcher.getScore()));
             }
 
             //When filter is there and all filter passed.
             if(filterPresent && allFilterPassed) {
+                if(matcher.getScore()>.5)
                 result.add(new ScoredObject<>(value, matcher.getScore()));
             }
 

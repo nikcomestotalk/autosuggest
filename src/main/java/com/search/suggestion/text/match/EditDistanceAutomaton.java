@@ -76,6 +76,7 @@ public final class EditDistanceAutomaton extends AbstractAutomaton
                 return false;
             }
         }
+
         return true;
     }
 

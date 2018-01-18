@@ -1,7 +1,15 @@
 package com.search.suggestion.util;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -12,35 +20,43 @@ import com.search.suggestion.data.SuggestPayload;
 import com.search.suggestion.engine.SearchEngine;
 import com.search.suggestion.text.index.FuzzyIndex;
 import com.search.suggestion.text.index.PatriciaTrie;
+import org.apache.http.client.utils.DateUtils;
 
 public class BackupTree implements Runnable {
-	private SearchEngine<SuggestPayload> searchEngine;;
+    private SearchEngine<SuggestPayload> futureEngine;
+    private SearchEngine<SuggestPayload> searchEngine;
 	private FuzzyIndex<SuggestPayload> indexdata;
 	private int timegap = 5000;
 	public BackupTree(SearchEngine<SuggestPayload> engine) {
 		this.searchEngine = engine;
 	}
-	public void run() {
+
+    public BackupTree(SearchEngine<SuggestPayload> suggestCurrent, SearchEngine<SuggestPayload> suggestFuture) {
+	    this.searchEngine = suggestCurrent;
+	    this.futureEngine = suggestFuture;
+    }
+
+    public void run() {
 		Kryo kryo = new Kryo();
-		while(true) {
+		try {
+			callReIndexer();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		/*while(true) {
 			SuggestAdapter adapter = (SuggestAdapter) (searchEngine.indexUsed());
 			indexdata = adapter.getIndex();
 	    	 FileOutputStream fos = null;
 	         ObjectOutputStream out = null;
 	         try {
-				String contentPath = System.getProperties().get("user.dir") + "/content/search.bin";
+				 String contentPath = System.getProperties().get("user.dir") + "/suggest/content/search.bin";
 				 Output output = new Output(new FileOutputStream(contentPath));
 				 kryo.writeObject(output, indexdata);
 				 output.close();
                  System.out.println("Search Object Persisted");
-				/* File f = new File(contentPath+"/content/search.bin");
-				 if(!f.exists())
-					 f.createNewFile();
-	             fos = new FileOutputStream(f);
-	             out = new ObjectOutputStream(fos);
-	             out.writeObject(indexdata);
-	             out.close();
-	             System.out.println("Search Object Persisted");*/
+
 	         } catch (Exception ex) {
 	             ex.printStackTrace();
 	         }
@@ -52,10 +68,31 @@ public class BackupTree implements Runnable {
 					 e.printStackTrace();
 				 }
 			 }
-		}
+		}*/
 	}
 
-	public void updateIndexer() throws FileNotFoundException {
+    private void callReIndexer() throws IOException, InterruptedException {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		CountDownLatch latch = new CountDownLatch(3);
+
+		ExecutorService es = Executors.newCachedThreadPool();
+		for(int i=0;i<3;i++) {
+			es.execute(new ReIndexer(dateFormat.format(getDate(-i)), futureEngine ));
+		}
+		es.shutdown();
+		es.awaitTermination(1, TimeUnit.DAYS );
+		System.out.println("done with syncing up");
+		searchEngine = futureEngine;
+
+    }
+
+    private Date getDate(int days) {
+		final Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, days);
+		return cal.getTime();
+	}
+
+    public void updateIndexer() throws FileNotFoundException {
 		Kryo kryo = new Kryo();
 
         SuggestAdapter adapter = (SuggestAdapter)(searchEngine.indexUsed());
@@ -77,6 +114,8 @@ public class BackupTree implements Runnable {
                 ex.printStackTrace();
             }
         }
+        //Start my new searchEngine to update
+
         /*FileInputStream fos = null;
         ObjectInputStream out = null;
         IndexAdapter indexdata = (IndexAdapter)(searchEngine.indexUsed());

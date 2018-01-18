@@ -219,7 +219,7 @@ public class Aggregator<T>
             bucketValue[i]  = 0;
             bucketWeight[i] = 0;
         }
-        for(int i=0; i<size;i++) {
+        for(int i=0; i<scores.size();i++) {
             //Map<Integer, List<SuggestPayload>> tMapWithBucket = new HashMap<>();
             ArrayList<T> arrayListWithBucket = new ArrayList<>();
             bucketList.add(arrayListWithBucket);
@@ -258,6 +258,7 @@ public class Aggregator<T>
         Set set = tmap.entrySet();
         Iterator iterator = set.iterator();
         List<T> result = new ArrayList<>();
+        int st = 0;
         while (iterator.hasNext()) {
             Entry mentry = (Entry) iterator.next();
             ArrayList<SuggestPayload> al = (ArrayList<SuggestPayload>) mentry.getValue();
@@ -344,8 +345,9 @@ public class Aggregator<T>
             }
             for(int i = 0; i < size; i++) {
                 if(tempBucket.get(i).size()>0)
-                    UpdateResults(bucketList.get(i), tempBucket.get(i));
+                    UpdateResults(bucketList.get(st), tempBucket.get(i));
             }
+            st++;
             /*if(bucketZero.size()>=1)
                 bucketList.get(0).putAll(bucketZero);
             if(bucketOne.size()>=1)
