@@ -18,7 +18,7 @@ import java.io.ObjectOutputStream;
 public class SerializeDump implements Runnable {
     private SearchEngine<SuggestPayload> searchEngine;;
     private FuzzyIndex<SuggestPayload> indexdata;
-    private int timegap = 50000;
+    private int timegap = 5000;
 
     public SerializeDump(SearchEngine<SuggestPayload> engine) {
         this.searchEngine = engine;

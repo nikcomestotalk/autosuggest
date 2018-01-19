@@ -9,6 +9,6 @@ import java.util.List;
 public interface ServerInterface {
     public List<RawResponse> getResponse(RawRequestInterface response);
     public int getPort();
-    public String getContext();
+    public String getContext() throws IOException;
     public HttpHandler getContextCallee() throws IOException;
 }

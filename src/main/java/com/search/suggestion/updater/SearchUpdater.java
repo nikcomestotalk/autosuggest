@@ -52,8 +52,8 @@ public class SearchUpdater implements ServerInterface {
     }
 
     @Override
-    public String getContext() {
-        return "/update";
+    public String getContext() throws IOException {
+        return ApplicationProperties.getProperty("updater.url");
     }
 
     @Override

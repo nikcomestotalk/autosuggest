@@ -21,9 +21,9 @@ public final class TextSuggestor
     public static void main(String[] args) throws IOException, InterruptedException {
 
        SearchEngine<SuggestPayload> suggestCurrent = new SearchEngine.Builder<SuggestPayload>()
-                .setIndex(new SuggestAdapter())
-                .setAnalyzer(new SuggestAnalyzer())
-                .build();
+               .setIndex(new SuggestAdapter())
+               .setAnalyzer(new SuggestAnalyzer())
+               .build();
 
        SearchEngine<SuggestPayload> suggestFuture = new SearchEngine.Builder<SuggestPayload>()
                 .setIndex(new SuggestAdapter())
@@ -34,7 +34,6 @@ public final class TextSuggestor
         Recover recover = RecoverFactory.getInstance(suggestCurrent, suggestFuture);
         recover.updateIndexer();
         recover.swap();
-
         ServerHandler serverHandler = new ServerHandler();
         (new SearchUpdater(suggestCurrent)).startService(serverHandler);
 

@@ -41,7 +41,6 @@ public final class EditDistanceAutomaton extends AbstractAutomaton
     @Override
     public double getScore()
     {
-    	//System.out.println("Vector size is "+ Arrays.toString(vector)+" Pattern is "+pattern+ " word is "+word+" Size is "+vector[size - 1]);
         int length = Math.max(patternLength, wordLength);
         //Pattern is substring of given word
         if(wordLength>patternLength)
@@ -59,16 +58,12 @@ public final class EditDistanceAutomaton extends AbstractAutomaton
     @Override
     public boolean isWordAccepted()
     {
-        //System.out.println(pattern);
-       // System.out.println(word);
-        //System.out.println(getDistance()+" threshold is "+threshold);
         return getDistance() <= threshold;
     }
 
     @Override
     public boolean isWordRejected()
     {
-    	//System.out.println(threshold);
         for (int i : vector)
         {
             if (i <= threshold)

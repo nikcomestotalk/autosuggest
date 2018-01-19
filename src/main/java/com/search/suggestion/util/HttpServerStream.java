@@ -26,7 +26,8 @@ public class HttpServerStream implements Runnable{
     }
     public void listen() throws IOException {
         HttpServer httpServer = HttpServer.create(new InetSocketAddress(server.getPort()), 0);
-        System.out.println("server started at " + server.getPort());
+
+        Logger.log("server started at " + server.getPort());
 
         httpServer.createContext(server.getContext(), server.getContextCallee());
         httpServer.setExecutor(null);

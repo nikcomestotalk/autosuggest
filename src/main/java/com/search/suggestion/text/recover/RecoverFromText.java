@@ -9,7 +9,6 @@ import com.search.suggestion.data.SuggestPayload;
 import com.search.suggestion.engine.SearchEngine;
 import com.search.suggestion.util.ApplicationProperties;
 import com.search.suggestion.util.DateUtil;
-import com.search.suggestion.util.ReIndexer;
 
 public class RecoverFromText extends AbstractRecover {
 
@@ -22,15 +21,16 @@ public class RecoverFromText extends AbstractRecover {
 
 		ExecutorService es = Executors.newCachedThreadPool();
 		int days = Integer.parseInt(ApplicationProperties.getProperty("recover.method.file.days"));
+		String userdir = (String) System.getProperties().get("user.dir");
+		String storage = ApplicationProperties.getProperty("recover.method.file.backup.path");
+
 		for(int i=0;i<days;i++) {
-			es.execute(new ReIndexer(DateUtil.getStringDate("yyyy-MM-dd", DateUtil.getDate(-i)), futureEngine ));
+            String filename = DateUtil.getStringDate("yyyy-MM-dd", DateUtil.getDate(-i));
+			String filePath =  String.format("%s%s%s.txt", userdir, storage, filename);
+
+			es.execute(new ReIndex(filePath, futureEngine));
 		}
 		es.shutdown();
 		es.awaitTermination(1, TimeUnit.DAYS );
     }
-
-	@Override
-	public void swap() {
-		searchEngine = futureEngine;
-	}
 }

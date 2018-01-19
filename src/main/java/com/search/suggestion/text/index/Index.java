@@ -42,39 +42,6 @@ public interface Index<V>
     boolean putAll(String key, Collection<V> values);
 
     /**
-     * Removes a single value associated with a key.
-     *
-     * @throws NullPointerException if {@code key} is null;
-     */
-    boolean remove(String key, @Nullable V value);
-
-    /**
-     * Removes a single value associated with any keys.
-     */
-    boolean remove(@Nullable V value);
-
-    /**
-     * Removes a collection of values associated with any keys.
-     *
-     * @throws NullPointerException if {@code values} is null;
-     */
-    boolean removeAll(Collection<V> values);
-
-    /**
-     * Removes all values associated with a key.
-     *
-     * @throws NullPointerException if {@code key} is null;
-     */
-    Set<V> removeAll(String key);
-
-    /**
-     * Removes a collection of values associated with a key.
-     *
-     * @throws NullPointerException if {@code key} or {@code values} are null;
-     */
-    boolean removeAll(String key, Collection<V> values);
-
-    /**
      * Returns the number of key-value associations.
      */
     int size();

@@ -36,13 +36,15 @@ public class SuggestPayload implements Indexable,Serializable
         this.setCount("1");
     }
    
-    public void copy(SuggestPayload sr) {
+    public void copy(SuggestPayload sr)
+	{
 		search =sr.getSearch();
 		filter = sr.getFilter();
 		realText = sr.getRealText();
 	}
 
-    private Boolean isNonZero(int i) {
+    private Boolean isNonZero(int i)
+	{
     	if(i>0)
     		return true;
     	return false;
@@ -57,7 +59,8 @@ public class SuggestPayload implements Indexable,Serializable
     {
         return search;
     }
-    public void setSearch(String search) {
+    public void setSearch(String search)
+	{
     	this.search = search;
     }
 
@@ -67,11 +70,13 @@ public class SuggestPayload implements Indexable,Serializable
     }
 
 
-	public int getCount() {
+	public int getCount()
+	{
 		return count;
 	}
 
-	public void setCount(String count) {
+	public void setCount(String count)
+	{
 		try {
     		this.count= Integer.parseInt(count);
     	}
@@ -79,37 +84,45 @@ public class SuggestPayload implements Indexable,Serializable
     		this.count =1;
     	}
 	}
-	public void setCount(int count) {
+	public void setCount(int count)
+	{
 		this.count =count;
 	}
 
-	public int getRecency() {
+	public int getRecency()
+	{
 		return recency;
 	}
 
-	public void setRecency(int recency) {
+	public void setRecency(int recency)
+	{
 		this.recency = recency;
 	}
 
-	public String getRealText() {
+	public String getRealText()
+	{
     	if(realText == null) {
     		return "";
 		}
 		return realText;
 	}
 
-	public void setRealText(String realText) {
+	public void setRealText(String realText)
+	{
 		this.realText = realText;
 	}
 
-	public int getRecords() {
+	public int getRecords()
+	{
 		return records;
 	}
 
-	public void setRecords(int records) {
+	public void setRecords(int records)
+	{
 		this.records = records;
 	}
-    public String toString() {
+    public String toString()
+	{
     	return "search"+ getSearch()+"realText"+ getRealText();
     }
     public Boolean ignoreFilter(String filter)

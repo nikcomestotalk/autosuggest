@@ -35,15 +35,13 @@ public class PostQueryHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
 
-        System.out.println(httpExchange.getRequestMethod());
+
         if (httpExchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
             httpExchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
             httpExchange.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
             httpExchange.sendResponseHeaders(204, -1);
             return ;
         }
-        System.out.println("out of itunes");
-        Map<String, Object> parameters = new HashMap<String, Object>();
 
         InputStreamReader isr = new InputStreamReader(httpExchange.getRequestBody(), "utf-8");
         BufferedReader br = new BufferedReader(isr);

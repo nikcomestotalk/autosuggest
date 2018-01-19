@@ -1,9 +1,10 @@
-package com.search.suggestion.util;
+package com.search.suggestion.text.recover;
 
 import com.search.suggestion.data.RawSeachRequest;
 import com.search.suggestion.data.RawSearchUpdateRequest;
 import com.search.suggestion.data.SuggestPayload;
 import com.search.suggestion.engine.SearchEngine;
+import com.search.suggestion.util.StopWords;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.*;
@@ -12,13 +13,13 @@ import java.util.Date;
 /**
  * Created by nikhil on 10/1/18.
  */
-public class ReIndexer implements Runnable{
+public class ReIndex implements Runnable{
 
     private String path;
     private SearchEngine<SuggestPayload> engine;
     private StopWords stopWords;
-    public ReIndexer(String file, SearchEngine<SuggestPayload> engine) throws IOException {
-        path = System.getProperties().get("user.dir") + "/suggest/content/backup/"+file+".txt";
+    public ReIndex(String file, SearchEngine<SuggestPayload> engine) throws IOException {
+        path = file;
         this.engine = engine;
         stopWords = new StopWords();
     }
