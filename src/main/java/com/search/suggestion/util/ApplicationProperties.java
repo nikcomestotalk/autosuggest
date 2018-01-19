@@ -14,7 +14,7 @@ public class ApplicationProperties {
         // create and load default properties
         properties = new Properties();
 
-        InputStream inputStream = new FileInputStream(System.getProperties().get("user.dir")+"/content/config.properties");
+        InputStream inputStream = new FileInputStream(System.getProperties().get("user.dir")+"/suggest/config/config.properties");
         properties.load(inputStream);
         inputStream.close();
     }

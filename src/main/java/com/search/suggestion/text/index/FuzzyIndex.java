@@ -14,17 +14,9 @@ import java.util.Set;
 public interface FuzzyIndex<V> extends Index<V>
 {
     /**
-     * Returns a {@link Set} of all values associated with a key fragment.
-     *
-     * @throws NullPointerException if {@code fragment} is null;
-     */
-    Set<ScoredObject<V>> getAny(String fragment);
-
-    /**
      * Returns a {@link Set} of all values associated with a key matcher.
      *
      * @throws NullPointerException if {@code matcher} is null;
      */
-    Set<ScoredObject<V>> getAny(Automaton matcher);
     Set<ScoredObject<V>> getAny(Automaton matcher, SearchPayload json);
 }

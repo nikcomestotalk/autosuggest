@@ -32,7 +32,7 @@ public class InputOutputStream implements Runnable{
     }
     public void listen() throws IOException {
         ServerSocket serverSocket = new ServerSocket(server.getPort());
-        System.out.println("Now listening on port "+server.getPort());
+        Logger.log("Now listening on port "+server.getPort());
         while (true)
         {
             socket = serverSocket.accept();
@@ -42,13 +42,8 @@ public class InputOutputStream implements Runnable{
             StringBuilder out = new StringBuilder();
             String line;
             String input = "";
-            /*while ((line = br.readLine()) != null) {
-                input = line;
-                //System.out.println(line);
-                //out.append(line);
-            }*/
+
             input = br.readLine();
-            System.out.println("Query from client is ---> "+input);
 
             BufferedWriter bw  =null;
             OutputStreamWriter osw = null;
@@ -68,8 +63,7 @@ public class InputOutputStream implements Runnable{
                 bw.close();
 
             } catch(Exception e) {
-                System.err.println("Got an exception! ");
-                System.err.println(e.getMessage());
+
                 e.printStackTrace();
                 if(bw !=null) {
                     bw.write("Server Error");

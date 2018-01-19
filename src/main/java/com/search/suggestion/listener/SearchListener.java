@@ -35,7 +35,7 @@ public class SearchListener implements  ServerInterface {
 
     @Override
     public List<RawResponse> getResponse(RawRequestInterface rawRequest) {
-        System.out.println("yes i am here who else want to come");
+
         RawSeachRequest rawSeachRequest = (RawSeachRequest) rawRequest;
         SearchPayload searchPayload = new SearchPayload();
         searchPayload.setSearch(rawSeachRequest.getQuery());
@@ -43,10 +43,6 @@ public class SearchListener implements  ServerInterface {
         searchPayload.setBucket(rawSeachRequest.getBucket());
         searchPayload.setLimit(rawSeachRequest.getLimit());
 
-        /*SuggestPayload sr = new SuggestPayload();
-        sr.setSearch(rawRequest.getQuery());
-        sr.setFilter(rawRequest.getFilter());
-        List<SuggestPayload> list = searchEngine.search(sr);*/
         List<SuggestPayload> list = searchEngine.search(searchPayload);
         List<RawResponse> result = new ArrayList<RawResponse>();
         int limit = 0;
@@ -79,8 +75,8 @@ public class SearchListener implements  ServerInterface {
     }
 
     @Override
-    public String getContext() {
-        return "/query";
+    public String getContext() throws IOException {
+        return ApplicationProperties.getProperty("listener.url");
     }
 
     @Override

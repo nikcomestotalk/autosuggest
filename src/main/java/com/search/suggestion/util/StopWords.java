@@ -11,8 +11,8 @@ import java.util.Set;
 public class StopWords {
     Set<String> stopWordsSet = new HashSet<String>();
     public StopWords() throws IOException {
-        //InputStream inputStream = ClassLoader.getSystemResourceAsStream(System.getProperties().get("user.dir")+"/content/stopwords.txt");
-        File file = new File(System.getProperties().get("user.dir")+"/content/stopwords.txt");
+
+        File file = new File(System.getProperties().get("user.dir")+ApplicationProperties.getProperty("stopwords.path"));
 
         BufferedReader br = new BufferedReader(
                 new FileReader(file));
@@ -31,7 +31,6 @@ public class StopWords {
             String wordCompare = word.toUpperCase();
             if(!stopWordsSet.contains(wordCompare))
             {
-                //System.out.println("coming here for "+word+" done here");
                 wordsList.add(word);
             }
 
@@ -41,7 +40,6 @@ public class StopWords {
             sb.append(ss);
             sb.append(" ");
         }
-        //System.out.println("coming ehre"+sb.toString()+"ending here");
         if(sb.toString().equals(""))
             return s;
 

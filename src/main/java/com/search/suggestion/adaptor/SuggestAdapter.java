@@ -15,28 +15,18 @@ public class SuggestAdapter implements IndexAdapter<SuggestPayload>, Serializabl
 {
     private FuzzyIndex<SuggestPayload> index = new PatriciaTrie<>();
     private Boolean thresholdCheckNotRequired = false;
-    @Override
-    public Collection<ScoredObject<SuggestPayload>> get(String token)
-    {
-    	//System.out.println("HI");
-    	double threshold = Math.log(token.length());
-    	if(thresholdCheckNotRequired == true ) {
-    		threshold = 0;
-    	}
-    	//System.out.println("Threshold value is "+ threshold);
-    	EditDistanceAutomaton eda = new EditDistanceAutomaton(token, threshold);
-        return index.getAny(eda);
-    }
+    private int minChars = 3;
     public Collection<ScoredObject<SuggestPayload>> get(String token, SearchPayload json)
     {
-    	//System.out.println("HI");
     	double threshold = Math.log(token.length());
 
     	if ( thresholdCheckNotRequired == true ) {
     		threshold = 0;
     	}
     	threshold = Math.round(threshold);
-    	//System.out.println("New Threshold value is "+ threshold);
+    	if(token.length() <= minChars) {
+    	    threshold = 0;
+        }
     	EditDistanceAutomaton eda = new EditDistanceAutomaton(token, threshold);
         return index.getAny(eda,json);
     }
@@ -49,14 +39,10 @@ public class SuggestAdapter implements IndexAdapter<SuggestPayload>, Serializabl
         return index.put(token, value);
     }
 
-    @Override
-    public boolean remove(SuggestPayload value)
-    {
-        return index.remove(value);
-    }
     public FuzzyIndex<SuggestPayload> getIndex() {
     	return index;
     }
+
     public void setIndex(FuzzyIndex<SuggestPayload> index) {
     	this.index = index;
     }

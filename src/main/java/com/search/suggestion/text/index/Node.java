@@ -31,12 +31,11 @@ public class Node<V> implements Serializable
             else {
                 for(V sr : this.values) {
                     SuggestPayload srv = (SuggestPayload)sr;
-                    //System.out.println("First one "+srv.getSearch()+" count is "+srv.getCount());
+
                     if(recordAlreadyPresent(srv,realSr)) {
                         srv.setCount(srv.getCount()+realSr.getCount());
                         donotadd =1;
                     }
-                    //System.out.println("Corrent one "+srv.getSearch()+" count is "+srv.getCount());
                 }
 
             }
@@ -46,7 +45,6 @@ public class Node<V> implements Serializable
             {
                 this.values = new ArraySet<>();
             }
-            System.out.println("Error in suggest Recrod insert"+ex);
         }
         if(donotadd == 0)
             return this.values.addAll(values);
