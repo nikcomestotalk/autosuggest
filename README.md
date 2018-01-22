@@ -1,5 +1,5 @@
 
-## Smart Search Suggestor
+## Smart Auto Suggestion in Java
 Let your customers engage right at the search bar by giving them more userful, user-centric searches with Smart Search 
 
 ## Salient features
@@ -8,6 +8,7 @@ Let your customers engage right at the search bar by giving them more userful, u
 3. Order don’t matter “Iphone 6s” or “6s iphone” yield same result
 4. Unlimited Filters and Parameters support
 5. Support personalization
+6. Customizable parameters like Servers port and recover methods[Refer #config.properties].
 
 ## Dependancies
 1. Apache Maven >= 3.3.9
@@ -40,7 +41,7 @@ METHOD : *POST*
 POST PARAMS: 
 ```json
 		{
-			"query": "iphone red",
+			"query": "iphone",
 			"filter": {		
 				"param1":1,
 				"param2":2
@@ -67,7 +68,30 @@ POST PARAMS:
 
 *Limit*  :  Limit the suggestions
 
-
+## Response Template
+```json
+[
+    {
+        "matched": "iphone 6s",
+        "parameters": {
+            "param1": 1,
+	    "param2":2,
+            "location": 4321
+        },
+        "error": ""
+    },
+    {
+        "matched": "Iphone 6s 64gb ",
+        "parameters": {
+	    "param1": 1,
+	    "param2":2,
+            "user": 1,
+            "location": 4321
+        },
+        "error": ""
+    }
+]
+```
 ## Training or Populating Data in engine
 `How to put data into Suggest Engine.`
 
