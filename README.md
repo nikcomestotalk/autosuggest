@@ -1,6 +1,6 @@
 
 ## Smart Auto Suggestion in Java
-Let your customers engage right at the search bar by giving them more userful, user-centric searches with Smart Search 
+Let your customers engage right at the search bar by giving them more useful, user-centric search suggestion
 
 ## Salient features
 1. Instant search suggestions and spell check
@@ -114,3 +114,5 @@ POST PARAMS:
 
 *parameter* : Tagging the text, which can be used for both filter and bucket parameters.
 
+## DEMO
+[![Demo of auto suggestion](https://lh3.googleusercontent.com/00OPaXbcR191IVGYIl1zfwZaVe1yd09WTD8bxhQAaxG1g_e7hFaW8IHU72aCOq_whXpZ9K1f1xT6LAS29-asPYUY5C0lHdHJlIlV2YcXyNeVBsSBNoJwXOkW1olz63nDVA3LAAg_t9IDLaU25a856gAPIP7SDi-k5N1WtBW5613C1zfrUJ08qleeRhP-OSJdB6dQOJcmqg3Msc-NTDGGUeSKMEmVPkskofIRSBcI3DTm1WPxC5K3spoMDo18d46Gzkly5MW7p5dFcB-I6MSlT9FBwlmKlc2wDBVbK2mNaWl4U2y_0on_rPeRFT4YelORGnp4w7oneDWeGZPtYktDbxYB34IXBn8fJ18AhV0f14FbHmkr0j0r1fJWZniou11-3AInfRt5CVj4ky6hgABf3EmcPyzWCNPu_SBWYlUhnAw0wSKKU4zC9iHhCu64_WsuYry52-XHlH5sTLc9MMgBbXXebI7o8j06gmZTm3TNTtYhhtgpqGPkioNfx28j_xiInCsyEH69dvsDLSvAMct2abOKjH3C2fSBd4H-H2ywpKv6FXsn-omZriPFXq-m8iCv=w1366-h597)](https://youtu.be/Y3vMfKAwWV4)
