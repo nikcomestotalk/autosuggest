@@ -1,6 +1,6 @@
 
-## Smart Search Suggestor
-Let your customers engage right at the search bar by giving them more userful, user-centric searches with Smart Search 
+## Smart Auto Suggestion in Java
+Let your customers engage right at the search bar by giving them more useful, user-centric search suggestion
 
 ## Salient features
 1. Instant search suggestions and spell check
@@ -8,6 +8,7 @@ Let your customers engage right at the search bar by giving them more userful, u
 3. Order don’t matter “Iphone 6s” or “6s iphone” yield same result
 4. Unlimited Filters and Parameters support
 5. Support personalization
+6. Customizable parameters like Servers port and recover methods[Refer #config.properties].
 
 ## Dependancies
 1. Apache Maven >= 3.3.9
@@ -40,7 +41,7 @@ METHOD : *POST*
 POST PARAMS: 
 ```json
 		{
-			"query": "iphone red",
+			"query": "iphone",
 			"filter": {		
 				"param1":1,
 				"param2":2
@@ -67,7 +68,30 @@ POST PARAMS:
 
 *Limit*  :  Limit the suggestions
 
-
+## Response Template
+```json
+[
+    {
+        "matched": "iphone 6s",
+        "parameters": {
+            "param1": 1,
+	    "param2":2,
+            "location": 4321
+        },
+        "error": ""
+    },
+    {
+        "matched": "Iphone 6s 64gb ",
+        "parameters": {
+	    "param1": 1,
+	    "param2":2,
+            "user": 1,
+            "location": 4321
+        },
+        "error": ""
+    }
+]
+```
 ## Training or Populating Data in engine
 `How to put data into Suggest Engine.`
 
@@ -90,3 +114,5 @@ POST PARAMS:
 
 *parameter* : Tagging the text, which can be used for both filter and bucket parameters.
 
+## DEMO(Click to see video demonstration)
+[![Demo of auto suggestion](https://lh3.googleusercontent.com/I7VbhhLJE_qKNW4sunbsxfQsYj8q9ReToamvtaXRFUPShHkxuw23zXbVTCbxiaq_g4EXdwQ8MgREDZVAPQGsQgLvtrYe4-lm__1HK8RyAx9xa824WZ5gtkc84Gdqr_MzNefpIbfcAYTR7OuIkSMR65r4GZAcxDhmpTpevDMnH4dK1Xnu70x3uk7haz83e46HKGqnKO7qN2kmmTU8R02zDMUF2XewBReESYwmnaqJJ4U1mOW_CSRJ0vDcpR72_irNb_BcMGDUSS0G7zGi04acDGHXLPfivGCQwYA_1IzEPlnWcO319R7XbL2kqPe37W8BjWgcndA7AG36-Sfrl1ywNimWt63AB-Xl7qZJwuD2ftpn24y4l0kPNoGs03VQIHKNpjzc8rN1Bb-8xdK2txYGOjDVT6L_D_XISqSaqyq_u6NDw08uXv34VR217zrJUo-Wd9StsMGwmHhBPgaIZalBid3jqJrJB6eo2FmsT3ZyLakFz_HGo2Xk1oM5zLMP8xgkLmjdGu2v1BL0IrJlf_FSQuFl5RG3xkJBwkAxz9-gjGAFvW1bOrmY2cUGtR0-eX41=w1366-h597)](https://youtu.be/Y3vMfKAwWV4)
