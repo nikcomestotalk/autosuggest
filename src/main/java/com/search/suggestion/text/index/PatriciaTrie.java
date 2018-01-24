@@ -220,11 +220,21 @@ public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,S
             for( String filter: filterMap.keySet()) {
                 if(!sr.ignoreFilter(filter)) {
                     filterPresent = true;
-                    if (filterMap.get(filter) != searchFilterMap.get(filter)) {
+                    int nodeFilterValue = 0;
+                    int queryFilterValue = 0;
+                    if(filterMap.containsKey(filter)) {
+                        nodeFilterValue = filterMap.get(filter);
+                    }
+                    if(searchFilterMap.containsKey(filter)) {
+                        queryFilterValue = searchFilterMap.get(filter);
+                    }
+                    if (nodeFilterValue != queryFilterValue) {
                         allFilterPassed = false;
                     }
+
                 }
             }
+
             /*System.out.println("---------------");
             System.out.println(sr.getSearch());
             System.out.println(matcher.getScore());

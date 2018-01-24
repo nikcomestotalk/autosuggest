@@ -127,9 +127,9 @@ public class SuggestPayload implements Indexable,Serializable
     }
     public Boolean ignoreFilter(String filter)
     {
-        if(filter.equals("user")) {
+        /*if(filter.equals("user")) {
             return true;
-        }
+        }*/
         return false;
     }
 }
