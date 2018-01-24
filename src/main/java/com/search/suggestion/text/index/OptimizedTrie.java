@@ -5,8 +5,6 @@ import com.search.suggestion.data.ScoredObject;
 import com.search.suggestion.data.SearchPayload;
 import com.search.suggestion.data.SuggestPayload;
 import com.search.suggestion.text.match.Automaton;
-import com.search.suggestion.text.match.EqualityAutomaton;
-import com.search.suggestion.text.util.ArraySet;
 
 import java.io.Serializable;
 import java.util.*;
@@ -19,14 +17,14 @@ import static com.search.suggestion.common.Precondition.checkPointer;
  *
  * <p>Note that this implementation is not synchronized.
  */
-public class PatriciaTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,Serializable
+public class OptimizedTrie<V> extends AbstractIndex<V> implements FuzzyIndex<V>,Serializable
 {
     private Node<V> root;
 
     /**
-     * Constructs a new {@link PatriciaTrie}.
+     * Constructs a new {@link OptimizedTrie}.
      */
-    public PatriciaTrie()
+    public OptimizedTrie()
     {
         root = new Node<V>();
     }

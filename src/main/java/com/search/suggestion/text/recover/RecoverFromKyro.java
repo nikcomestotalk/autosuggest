@@ -5,8 +5,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.search.suggestion.adaptor.SuggestAdapter;
 import com.search.suggestion.data.SuggestPayload;
 import com.search.suggestion.engine.SearchEngine;
-import com.search.suggestion.text.index.FuzzyIndex;
-import com.search.suggestion.text.index.PatriciaTrie;
+import com.search.suggestion.text.index.OptimizedTrie;
 import com.search.suggestion.util.ApplicationProperties;
 
 import java.io.File;
@@ -29,7 +28,7 @@ public class RecoverFromKyro extends AbstractRecover {
         if(f.isFile()) {
             try {
                 Input input = new Input(new FileInputStream(contentPath));
-                PatriciaTrie index = kryo.readObject(input, PatriciaTrie.class);
+                OptimizedTrie index = kryo.readObject(input, OptimizedTrie.class);
                 input.close();
 
                 adapter.setIndex(index);

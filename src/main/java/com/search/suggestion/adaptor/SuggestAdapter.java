@@ -5,7 +5,7 @@ import com.search.suggestion.data.ScoredObject;
 import com.search.suggestion.data.SearchPayload;
 import com.search.suggestion.data.SuggestPayload;
 import com.search.suggestion.text.index.FuzzyIndex;
-import com.search.suggestion.text.index.PatriciaTrie;
+import com.search.suggestion.text.index.OptimizedTrie;
 import com.search.suggestion.text.match.EditDistanceAutomaton;
 
 import java.io.Serializable;
@@ -13,7 +13,7 @@ import java.util.Collection;
 
 public class SuggestAdapter implements IndexAdapter<SuggestPayload>, Serializable
 {
-    private FuzzyIndex<SuggestPayload> index = new PatriciaTrie<>();
+    private FuzzyIndex<SuggestPayload> index = new OptimizedTrie<>();
     private Boolean thresholdCheckNotRequired = false;
     private int minChars = 3;
     public Collection<ScoredObject<SuggestPayload>> get(String token, SearchPayload json)
