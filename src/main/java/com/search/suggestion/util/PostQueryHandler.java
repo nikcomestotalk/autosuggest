@@ -8,6 +8,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.apache.http.HttpHeaders;
 import org.apache.http.protocol.HTTP;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.BufferedReader;
@@ -52,18 +53,28 @@ public class PostQueryHandler implements HttpHandler {
         }
         String query = stringBuffer.toString();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        RawSeachRequest rawRequest = objectMapper.readValue(query, RawSeachRequest.class);
-        rawRequest.setQuery(stopWords.removeStopWords(rawRequest.getQuery()));
-        // send response
+        RawSeachRequest rawRequest  = null;
+        RawResponse rawResponse = new RawResponse();
         List<RawResponse> list = new ArrayList<RawResponse>();
-        if(rawRequest.getBucket().size()>3) {
-            RawResponse rawResponse = new RawResponse();
-            rawResponse.setError("Max Bucket size is 3");
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            rawRequest = objectMapper.readValue(query, RawSeachRequest.class);
+            rawRequest.setQuery(stopWords.removeStopWords(rawRequest.getQuery()));
+        }
+        catch(JsonMappingException e) {
+            rawResponse.setError(e.getPath().get(0).getFieldName() + " field invalid");
             list.add(rawResponse);
         }
-        else
-            list = server.getResponse(rawRequest);
+        // send response
+        if(rawRequest != null) {
+            if (rawRequest.getBucket().size() > 3) {
+
+                rawResponse.setError("Max Bucket size is 3");
+                list.add(rawResponse);
+            } else
+                list = server.getResponse(rawRequest);
+        }
 
         String response = new Gson().toJson(list);
         httpExchange.getResponseHeaders().add("Content-Type", "application/json; charset=UTF-8");

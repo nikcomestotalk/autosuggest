@@ -7,6 +7,8 @@ public class RawResponse {
     private String matched;
     private Map<String,Integer> parameters = new HashMap<String,Integer>();
     private String error = "";
+    private String message = "";
+
     public String getMatched() {
         return matched;
     }
@@ -26,5 +28,10 @@ public class RawResponse {
     public void setError(String error) {
         if(error != null)
             this.error = error;
+    }
+    public void setMessage(String message) {
+        if(message != null) {
+            this.message = message;
+        }
     }
 }

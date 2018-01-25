@@ -11,7 +11,7 @@
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
         <addClasspath>true</addClasspath>
            <exec.mainClass>com.search.suggestion.TextSuggestor</exec.mainClass>
-        <main.basedir>${project.parent.basedir}</main.basedir>
+        <main.basedir>${basedir}</main.basedir>
     </properties>
     <build>
         <plugins>
