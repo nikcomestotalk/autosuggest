@@ -5,20 +5,24 @@ Let your customers engage right at the search bar by giving them more useful, us
 ## Salient features
 1. Instant search suggestions and spell check
 2. Low Latency  ~ Response within 20 ms for 1M records
-3. Order don’t matter “Iphone 6s” or “6s iphone” yield same result
+3. Order doesn't matter “iPhone 6s” or “6s iPhone” yield same result
 4. Unlimited Filters and Parameters support
 5. Support personalization
-6. Customizable parameters like Servers port and recover methods[Refer #config.properties].
+6. Customizable parameters like Servers port and recovery methods[Refer #config.properties].
 
-## Dependancies
+## Dependancies(if no docker)
 1. Apache Maven >= 3.3.9
 2. Java ~ 1.8
 
 ## Installation
-1. Git clone https://github.com/nikcomestotalk/autosuggest.git
-2. cd autosuggest
-3. mvn install
-4. mvn exec:java
+### 	Not a docker friend
+	1. Git clone https://github.com/nikcomestotalk/autosuggest.git
+	2. cd autosuggest
+	3. mvn install
+	4. mvn exec:java
+	
+### 	Docker is my childhood friend
+	1. docker run -d -p 1082:1082 -p 1081:1081 --name autosuggest autosuggest/autosuggest
 
 ## Contributing
 
